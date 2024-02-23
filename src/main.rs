@@ -7,6 +7,6 @@ fn main() {
     _ = message_box(
             "Hello", 
             "Title", 
-            &[CANCEL_TRY_CONTINUE, ICON_INFORMATION, TEXT_RTL, DEF_BUTTON3]
+            [CANCEL_TRY_CONTINUE, ICON_INFORMATION, TEXT_RTL, DEF_BUTTON3]
         );
 }

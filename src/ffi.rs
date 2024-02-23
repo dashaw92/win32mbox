@@ -9,10 +9,19 @@ extern "system" {
     fn MessageBoxA(hwnd: usize, text: *const wchar_t, caption: *const wchar_t, ty: usize) -> i32;
 }
 
-pub fn message_box<S: AsRef<str>>(text: S, title: S, mb_type: &[MessageBoxType]) -> Result<MessageBoxResult, MBError<S>> {
+type MBResult<S> = Result<MessageBoxResult, MBError<S>>;
+
+pub fn message_box<S, const N: usize>(
+    text: S, 
+    title: S, 
+    mb_type: [MessageBoxType; N]
+) -> MBResult<S> 
+where 
+    S: AsRef<str> 
+{
     let text = CString::new(text.as_ref()).map_err(|_| MBError::InvalidString(text))?;
     let title = CString::new(title.as_ref()).map_err(|_| MBError::InvalidString(title))?;
-    let type_bits = mb_type.into_iter().fold(0, |acc, &field| acc | field as usize);
+    let type_bits = mb_type.into_iter().fold(0, |acc, field| acc | field as usize);
 
     unsafe {
         MessageBoxA(0, text.as_ptr(), title.as_ptr(), type_bits)
